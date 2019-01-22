@@ -18,4 +18,11 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("USER", username);
         return intent;
     }
+
+    public String getName() {
+        return "";
+    }
+
+    public void doSomeThings(String name) {
+    }
 }

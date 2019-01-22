@@ -10,9 +10,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class MainTest {
     @Mock
-    Context mContext;
+    private Context mContext;
+    @Mock
+    private MainActivity mainActivity;
 
     @Before
     public void initMocks() {
@@ -21,14 +29,26 @@ public class MainTest {
 
     @Test
     public void testIntentCreated() {
-        Intent intent = MainActivity.createNewIntent(mContext, "viet");
-        Assert.assertNotNull(intent);
+        // assign value to getName
+        when(mainActivity.getName()).thenReturn("abc");
 
-        Bundle bundle = getBundle(intent);
-        Assert.assertEquals("viet", bundle.getString("USER"));
+        Intent intent = MainActivity.createNewIntent(mContext, mainActivity.getName());
+        Assert.assertNotNull(intent);
+        Bundle bundle = intent.getExtras();
+        // check value
+        Assert.assertEquals("abc", bundle.getString("USER"));
     }
 
-    private Bundle getBundle(Intent intent) {
-        return intent.getExtras();
+    @Test
+    public void verifyString() {
+        mainActivity.doSomeThings("abc");
+        // check if method was called or not
+        verify(mainActivity).doSomeThings("abc");
+        // check if method was called 1 time or not
+        verify(mainActivity, times(0)).doSomeThings("abc");
+        // check if method was called at least 1 time or not
+        verify(mainActivity, atLeast(1)).doSomeThings("abc");
+        // check if method was called at most 10 times or not
+        verify(mainActivity, atMost(10)).doSomeThings("abc");
     }
 }
